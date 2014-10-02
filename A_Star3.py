@@ -1,4 +1,5 @@
 import heapq
+import Queue
 #                                                                                           --------------------------------------------
 #A : starting                                                                               -----HELLO HELLO WELCOME TO CYBERSPACE------
 #B : ending                                                                                 --------------------------------------------
@@ -30,6 +31,7 @@ def read_map(file_string):                           #This method reads a file t
             mapstring = mapstring + line.strip()
         f.closed
     return mapstring
+
 def makeEmptyGrid(grid_width,grid_height):
     for x in range(grid_width):
         board.append([0] * grid_height)
@@ -59,7 +61,8 @@ class AStar(object):
 
     def __init__(self):
         self.opened = []
-        heapq.heapify(self.opened)
+        #heapq.heapify(self.opened)
+        self.q = Queue.Queue(self.opened)
         self.closed = set()
         self.cells = []
         self.grid_height = 10
@@ -80,44 +83,44 @@ class AStar(object):
         #These loops takes the mapstring and turns it into a coordinate system of list
         for x in xrange(grid_width):
             for y in xrange(grid_height):
-                if map3[grid_width*(grid_height-y-1) + x] == 'r':                        #Change map in the if statement: map1,map2,map3 or map4
+                if map1[grid_width*(grid_height-y-1) + x] == 'r':                        #Change map in the if statement: map1,map2,map3 or map4
                     grid[x][y] = 'r'
                     cell_type = 'r'
                     g_cost = 1
                     board[x][y] = 'r'
 
-                if map3[grid_width*(grid_height-y-1) + x] == 'g':
+                if map1[grid_width*(grid_height-y-1) + x] == 'g':
                     grid[x][y] = 'g'
                     cell_type = 'g'
                     g_cost = 5
                     board[x][y] = 'g'
 
-                if map3[grid_width*(grid_height-y-1) + x] == 'f':
+                if map1[grid_width*(grid_height-y-1) + x] == 'f':
                     grid[x][y] = 'f'
                     cell_type = 'f'
                     g_cost = 10
                     board[x][y] = 'f'
 
-                if map3[grid_width*(grid_height-y-1) + x] == 'm':
+                if map1[grid_width*(grid_height-y-1) + x] == 'm':
                     grid[x][y] = 'm'
                     cell_type = 'm'
                     g_cost = 50
                     board[x][y] = 'm'
 
-                if map3[grid_width*(grid_height-y-1) + x] == 'w':
+                if map1[grid_width*(grid_height-y-1) + x] == 'w':
                     grid[x][y] = 'w'
                     cell_type = 'w'
                     g_cost = 100
                     board[x][y] = 'w'
 
-                if map3[grid_width*(grid_height-y-1) + x] == 'A':
+                if map1[grid_width*(grid_height-y-1) + x] == 'A':
                     grid[x][y] = 'A'
                     cell_type = 'A'
                     g_cost = 0
                     board[x][y] = 'A'
                     print "coordinates of A is: %d,%d" % (x, y)
 
-                if map3[grid_width*(grid_height-y-1) + x] == 'B':
+                if map1[grid_width*(grid_height-y-1) + x] == 'B':
                     grid[x][y] = 'B'
                     cell_type = 'B'
                     g_cost = 0
@@ -129,8 +132,8 @@ class AStar(object):
 
                 self.cells.append(Cell(x, y, cell_type, g_cost))
 
-        self.start = self.get_cell(1, 2)                                   #The starting coordinates and ending coordinates can be plotted in here
-        self.end = self.get_cell(27, 9)                                     # <----------map1:start(17, 9), end(17,0)
+        self.start = self.get_cell(17, 9)                                   #The starting coordinates and ending coordinates can be plotted in here
+        self.end = self.get_cell(17, 0)                                     # <----------map1:start(17, 9), end(17,0)
                                                                             #            map2:start(2, 8), end(28, 0)
                                                                             #            map3:start(1, 2), end(27, 9)
                                                                             #            map3:start(14, 7), end(13, 3)
@@ -215,10 +218,16 @@ class AStar(object):
 
     def process(self):
         # add starting cell to open heap queue
-        heapq.heappush(self.opened, (self.start.f, self.start))
+        #A*
+        #heapq.heappush(self.opened, (self.start.f, self.start))
+        #BFS
+        self.q.put(self.opened, (self.start.f, self.start))
+
         while len(self.opened):
             # pop cell from heap queue
-            f, cell = heapq.heappop(self.opened)
+            #f, cell = heapq.heappop(self.opened)
+            f, cell = self.q.get(self.opened)
+            print self.q
             # add cell to closed list so we don't process it twice
             self.closed.add(cell)
             # if ending cell, display found path
@@ -238,7 +247,8 @@ class AStar(object):
                     else:
                         self.update_cell(adj_cell, cell)
                         # add adj cell to open list
-                        heapq.heappush(self.opened, (adj_cell.f, adj_cell))
+                        #heapq.heappush(self.opened, (adj_cell.f, adj_cell))
+                        self.q.put(self.opened, (adj_cell.f, adj_cell))
 
 #=====================================MAIN=============================================
 def main():
@@ -249,6 +259,7 @@ def main():
 
     for i in xrange(len(board)):
         print board[i]
+
 
 if __name__ == "__main__":
     main()
