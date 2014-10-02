@@ -23,35 +23,6 @@ board = []
 
 #========================Support Functions===============================================
 
-def makeEmptyGrid(grid_width,grid_height):
-    for x in range(grid_width):
-        board.append([0] * grid_height)
-
-def createBoard(board, board_height):
-    boardGrid = []
-    boardWidth = len(board)/board_height
-
-    for i in xrange(0,board_height):
-        boardRow = board[i*40:40*(i+1)]
-        boardGrid.append(boardRow)
-    return boardGrid
-
-def printBoard(board):
-    for i in xrange(len(board)):
-        print board[i]
-
-
-def getCell(x, y, board, board_height):
-    return board[x * board_height + y]
-
-def gridify(file_string):
-    grid_data = []
-    with open(file_string) as f:
-        for line in f:
-            grid_data.append(line.strip())
-    f.closed
-    return grid_data
-
 def read_map(file_string):                           #This method reads a file that is in the same
     mapstring = ""                                  #folder and return it as a string.
     with open(file_string) as f:
@@ -61,8 +32,7 @@ def read_map(file_string):                           #This method reads a file t
     return mapstring
 
 
-
-#=====================MAPS_AS_String===========================================
+#=====================MAPS_AS_String====================================================
 
 map1 = read_map(board1)
 map2 = read_map(board2)
@@ -70,9 +40,8 @@ map3 = read_map(board3)
 map4 = read_map(board4)
 
 
-#==============================================================================
-#=========================THE_MAIN_CLASSES=====================================
-#==============================================================================
+#=========================THE_MAIN_CLASSES==============================================
+
 class Cell(object):                                             #Each tile on the map is
     def __init__(self, x, y, cell_type, g_cost):                #Cell objects
         self.cell_type = cell_type                              #cell type can be: r ,g ,f ,m or w.
