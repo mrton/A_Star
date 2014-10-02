@@ -31,14 +31,15 @@ board11 = ( "mmmmmffffrrrrrrrrArrrrrrrrrrrrrrfffmmmmm"
 board = []
 
 class Cell(object):
-    def __init__(self, x, y, cell_type):
+    def __init__(self, x, y, cell_type, g_cost):
         #cell type can be: r ,g ,f ,m or w.
+
 
         self.cell_type = cell_type
         self.x = x
         self.y = y
         self.parent = None
-        self.g = 0
+        self.g = g_cost
         self.h = 0
         self.f = 0
 
@@ -64,49 +65,61 @@ class AStar(object):
         #The access is by [x][y]
         w, h = 10, 40
         grid = [[None] * w for i in xrange(h)]
-        cells = []
 
         for x in xrange(grid_width):
             for y in xrange(grid_height):
                 if board11[grid_width*(grid_height-y-1) + x] == 'r':
                     grid[x][y] = 'r'
                     cell_type = 'r'
+                    g_cost = 1
+                    board[x][y] = 'r'
 
                 if board11[grid_width*(grid_height-y-1) + x] == 'g':
                     grid[x][y] = 'g'
                     cell_type = 'g'
+                    g_cost = 5
+                    board[x][y] = 'g'
 
                 if board11[grid_width*(grid_height-y-1) + x] == 'f':
                     grid[x][y] = 'f'
-                    cell_type = 'r'
+                    cell_type = 'f'
+                    g_cost = 10
+                    board[x][y] = 'f'
 
                 if board11[grid_width*(grid_height-y-1) + x] == 'm':
                     grid[x][y] = 'm'
                     cell_type = 'm'
+                    g_cost = 50
+                    board[x][y] = 'm'
 
                 if board11[grid_width*(grid_height-y-1) + x] == 'w':
                     grid[x][y] = 'w'
                     cell_type = 'w'
+                    g_cost = 100
+                    board[x][y] = 'w'
 
                 if board11[grid_width*(grid_height-y-1) + x] == 'A':
                     grid[x][y] = 'A'
                     cell_type = 'A'
+                    g_cost = 0
+                    board[x][y] = 'A'
 
                 if board11[grid_width*(grid_height-y-1) + x] == 'B':
                     grid[x][y] = 'B'
                     cell_type = 'B'
+                    g_cost = 0
+                    board[x][y] = 'B'
 
-                self.cells.append(Cell(x, y, cell_type))
+                self.cells.append(Cell(x, y, cell_type, g_cost))
 
         # The starting coordinates and ending coordinates can be plotted in here
         self.start = self.get_cell(17, 9)
         self.end = self.get_cell(17, 0)
-        print self.start
-        print self.end
 
     def get_heuristic(self, cell):
         #Compute the heuristic value H for a cell: distance between
         #this cell and the ending cell multiply by 10.
+        #Manhatten distance
         return 10 * (abs(cell.x - self.end.x) + abs(cell.y - self.end.y))
 
     def get_cell(self, x, y):
@@ -129,11 +142,23 @@ class AStar(object):
         return cells
 
     def display_path(self):
+        total_cost = 0
         cell = self.end
         while cell.parent is not self.start:
             cell = cell.parent
-            board[cell.x][cell.y] = 8
+            if cell.cell_type == 'r':
+                total_cost = total_cost + 1
+            if cell.cell_type == 'g':
+                total_cost = total_cost + 5
+            if cell.cell_type == 'f':
+                total_cost = total_cost + 10
+            if cell.cell_type == 'm':
+                total_cost = total_cost + 50
+            if cell.cell_type == 'w':
+                total_cost = total_cost + 100
+            board[cell.x][cell.y] = '*'
             print 'path: cell: %d,%d' % (cell.x, cell.y)
+        print total_cost
 
     def compare(self, cell1, cell2):
         if cell1.f < cell2.f:
@@ -143,7 +168,19 @@ class AStar(object):
         return 0
 
     def update_cell(self, adj, cell):
-        adj.g = cell.g + 10
+        cost_g = 10
+        if adj.cell_type == 'r':
+            cost_g = 1
+        elif adj.cell_type == 'g':
+            cost_g = 5
+        elif adj.cell_type == 'f':
+            cost_g = 10
+        elif adj.cell_type == 'm':
+            cost_g = 50
+        elif adj.cell_type == 'w':
+            cost_g = 100
+
+        adj.g = cell.g + cost_g
         adj.h = self.get_heuristic(adj)
         adj.parent = cell
         adj.f = adj.h + adj.g
@@ -163,7 +200,7 @@ class AStar(object):
             # get adjacent cells for cell
             adj_cells = self.get_adjacent_cells(cell)
             for adj_cell in adj_cells:
-                if adj_cell.reachable and adj_cell not in self.closed:
+                if adj_cell not in self.closed:
                     if (adj_cell.f, adj_cell) in self.opened:
                         # if adj cell in open list, check if current path is
                         # better than the one previously found
@@ -207,76 +244,16 @@ def gridify(file_string):
     f.closed
     return grid_data
 
-def get_cell(x, y):
-   #returning a cell from the cell list.
-    return cells[x * grid_height + y]
 
 #=====================================MAIN=============================================
-cells = []
-grid_width = 40
-grid_height = 10
 def main():
-    list1 = []
-    grid1 = gridify(board1)
-    print grid1
-    for i in xrange(len(grid1)):
-        print grid1[i]
-
-    grid_width = 40
-    grid_height = 10
-
-    #Making a matrix 10x40 to represent the board.
-    #The access is by [x][y]
-    w, h = 10, 40
-    grid = [[None] * w for i in xrange(h)]
-
-
-    for x in xrange(grid_width):
-        for y in xrange(grid_height):
-            if board11[grid_width*(grid_height-y-1) + x] == 'r':
-                grid[x][y] = 'r'
-                cell_type = 'r'
-
-            if board11[grid_width*(grid_height-y-1) + x] == 'g':
-                grid[x][y] = 'g'
-                cell_type = 'g'
-
-            if board11[grid_width*(grid_height-y-1) + x] == 'f':
-                grid[x][y] = 'f'
-                cell_type = 'r'
-
-            if board11[grid_width*(grid_height-y-1) + x] == 'm':
-                grid[x][y] = 'm'
-                cell_type = 'm'
-
-            if board11[grid_width*(grid_height-y-1) + x] == 'w':
-                grid[x][y] = 'w'
-                cell_type = 'w'
-
-            if board11[grid_width*(grid_height-y-1) + x] == 'A':
-                grid[x][y] = 'A'
-                cell_type = 'A'
-                print "coordinates A: %d,%d" % (x, y)
-
-            if board11[grid_width*(grid_height-y-1) + x] == 'B':
-                grid[x][y] = 'B'
-                cell_type = 'B'
-                print "coordinates B: %d,%d" % (x, y)
-
-            cells.append(Cell(x, y, cell_type))
-
-    print len(cells)
-    print "this should be: A" + cells[179].cell_type
-    print "this should be: B" + cells[170].cell_type
-    print cells[179]
-    start = get_cell(17,9)
-    end = get_cell(17,0)
-    print start.cell_type
-    print end.cell_type
 
     a = AStar()
     a.init_grid()
-    print a.cells[170].cell_type
+    a.process()
+
+    for i in xrange(len(board)):
+        print board[i]
 
 
 if __name__ == "__main__":

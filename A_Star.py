@@ -205,8 +205,7 @@ def main():
     #printing board
     for i in xrange(len(board)):
         print board[i]
-    for x in xrange(len(a.cells)):
-        print a.cells[x].reachable
+
 
 if __name__ == "__main__":
     main()
