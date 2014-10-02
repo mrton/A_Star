@@ -83,7 +83,7 @@ class AStar(object):
         #------------Board3-------------
         #self.start = self.get_cell(8, 3)
         #self.end = self.get_cell(19, 0)
-        #oard[8][3] = 1
+        #board[8][3] = 1
         #board[19][0] = 3
         #------------Board4-------------
         self.start = self.get_cell(0, 6)
