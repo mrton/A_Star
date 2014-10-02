@@ -8,34 +8,74 @@ import heapq
 #m : mountains       50
 #w : water          100
 
-#=======================boards=====================================
-#the text files must be in the same folder
+#=======================boards==========================================================
+#the text files must be in the same folder.
+#Can use read_map method to generate string
 
 board1 = "board-2-1.txt"
 board2 = "board-2-2.txt"
 board3 = "board-2-3.txt"
 board4 = "board-2-4.txt"
 
-board11 = ( "mmmmmffffrrrrrrrrArrrrrrrrrrrrrrfffmmmmm"
-            "mmmffffffffrrrrrrrrrrrrrrrrrrrrfffffmmmm"
-            "mmfffffffffffffffffffffffffffrffffffmmmm"
-            "mmfffffffffffffwwwwwfffffffffrfffffffmmm"
-            "mfffffffffffffwwwwwwwffffffffrffffffmmmm"
-            "mmffffffffffffwwwwwwwffrrrrrrrrrrrrrmmmm"
-            "mmmffffffffffffwwwwwffffffffffffrffffmmm"
-            "mmffffffffffffffffffffffffffffffrfffffmm"
-            "mmffffffffggggggggggggggggggggggggffffmm"
-            "mmmffffggggggggggBggggggggggggggggggffmm")
-
-
+#for printing to terminal
 board = []
 
-class Cell(object):
-    def __init__(self, x, y, cell_type, g_cost):
-        #cell type can be: r ,g ,f ,m or w.
+
+#========================Support Functions===============================================
+
+def makeEmptyGrid(grid_width,grid_height):
+    for x in range(grid_width):
+        board.append([0] * grid_height)
+
+def createBoard(board, board_height):
+    boardGrid = []
+    boardWidth = len(board)/board_height
+
+    for i in xrange(0,board_height):
+        boardRow = board[i*40:40*(i+1)]
+        boardGrid.append(boardRow)
+    return boardGrid
+
+def printBoard(board):
+    for i in xrange(len(board)):
+        print board[i]
 
 
-        self.cell_type = cell_type
+def getCell(x, y, board, board_height):
+    return board[x * board_height + y]
+
+def gridify(file_string):
+    grid_data = []
+    with open(file_string) as f:
+        for line in f:
+            grid_data.append(line.strip())
+    f.closed
+    return grid_data
+
+def read_map(file_string):                           #This method reads a file that is in the same
+    mapstring = ""                                  #folder and return it as a string.
+    with open(file_string) as f:
+        for line in f:
+            mapstring = mapstring + line.strip()
+        f.closed
+    return mapstring
+
+
+
+#=====================MAPS_AS_String===========================================
+
+map1 = read_map(board1)
+map2 = read_map(board2)
+map3 = read_map(board3)
+map4 = read_map(board4)
+
+
+#==============================================================================
+#=========================THE_MAIN_CLASSES=====================================
+#==============================================================================
+class Cell(object):                                             #Each tile on the map is
+    def __init__(self, x, y, cell_type, g_cost):                #Cell objects
+        self.cell_type = cell_type                              #cell type can be: r ,g ,f ,m or w.
         self.x = x
         self.y = y
         self.parent = None
@@ -54,72 +94,80 @@ class AStar(object):
         self.grid_width = 40
 
     def init_grid(self):
-
         #Making an empty matrix of the same size as the board, for view.
         makeEmptyGrid(self.grid_width,self.grid_height)
-
         grid_width = 40
         grid_height = 10
 
         #Making a matrix 10x40 to represent the board.
+        #The dimesions are opposite in order to make accesibility easier.
         #The access is by [x][y]
         w, h = 10, 40
         grid = [[None] * w for i in xrange(h)]
 
+        #These loops takes the mapstring and turns it into a coordinate system of list
         for x in xrange(grid_width):
             for y in xrange(grid_height):
-                if board11[grid_width*(grid_height-y-1) + x] == 'r':
+                if map3[grid_width*(grid_height-y-1) + x] == 'r':                        #Change map in the if statement: map1,map2,map3 or map4
                     grid[x][y] = 'r'
                     cell_type = 'r'
                     g_cost = 1
                     board[x][y] = 'r'
 
-                if board11[grid_width*(grid_height-y-1) + x] == 'g':
+                if map3[grid_width*(grid_height-y-1) + x] == 'g':
                     grid[x][y] = 'g'
                     cell_type = 'g'
                     g_cost = 5
                     board[x][y] = 'g'
 
-                if board11[grid_width*(grid_height-y-1) + x] == 'f':
+                if map3[grid_width*(grid_height-y-1) + x] == 'f':
                     grid[x][y] = 'f'
                     cell_type = 'f'
                     g_cost = 10
                     board[x][y] = 'f'
 
-                if board11[grid_width*(grid_height-y-1) + x] == 'm':
+                if map3[grid_width*(grid_height-y-1) + x] == 'm':
                     grid[x][y] = 'm'
                     cell_type = 'm'
                     g_cost = 50
                     board[x][y] = 'm'
 
-                if board11[grid_width*(grid_height-y-1) + x] == 'w':
+                if map3[grid_width*(grid_height-y-1) + x] == 'w':
                     grid[x][y] = 'w'
                     cell_type = 'w'
                     g_cost = 100
                     board[x][y] = 'w'
 
-                if board11[grid_width*(grid_height-y-1) + x] == 'A':
+                if map3[grid_width*(grid_height-y-1) + x] == 'A':
                     grid[x][y] = 'A'
                     cell_type = 'A'
                     g_cost = 0
                     board[x][y] = 'A'
+                    print "coordinates of A is: %d,%d" % (x, y)
 
-                if board11[grid_width*(grid_height-y-1) + x] == 'B':
+                if map3[grid_width*(grid_height-y-1) + x] == 'B':
                     grid[x][y] = 'B'
                     cell_type = 'B'
                     g_cost = 0
                     board[x][y] = 'B'
+                    print "coordinates of B is: %d,%d" % (x, y)
+
+                #pushing every cell in to the cells-list, using a getMethod to get
+                #the right cell out of the list
 
                 self.cells.append(Cell(x, y, cell_type, g_cost))
 
-        # The starting coordinates and ending coordinates can be plotted in here
-        self.start = self.get_cell(17, 9)
-        self.end = self.get_cell(17, 0)
+        self.start = self.get_cell(1, 2)                                   #The starting coordinates and ending coordinates can be plotted in here
+        self.end = self.get_cell(27, 9)                                     # <----------map1:start(17, 9), end(17,0)
+                                                                            #            map2:start(2, 8), end(28, 0)
+                                                                            #            map3:start(1, 2), end(27, 9)
+                                                                            #            map3:start(14, 7), end(13, 3)
+
 
     def get_heuristic(self, cell):
         #Compute the heuristic value H for a cell: distance between
         #this cell and the ending cell multiply by 10.
-        #Manhatten distance
+        #Different heuristics can be used here.
         return 10 * (abs(cell.x - self.end.x) + abs(cell.y - self.end.y))
 
     def get_cell(self, x, y):
@@ -141,24 +189,32 @@ class AStar(object):
             cells.append(self.get_cell(cell.x, cell.y+1))
         return cells
 
+
     def display_path(self):
         total_cost = 0
         cell = self.end
         while cell.parent is not self.start:
             cell = cell.parent
             if cell.cell_type == 'r':
-                total_cost = total_cost + 1
+                total_cost += 1
+                print "road"
             if cell.cell_type == 'g':
-                total_cost = total_cost + 5
+                total_cost += 5
+                print "grass"
             if cell.cell_type == 'f':
-                total_cost = total_cost + 10
+                total_cost += 10
+                print "forest"
             if cell.cell_type == 'm':
-                total_cost = total_cost + 50
+                total_cost += 50
+                print "mountain"
             if cell.cell_type == 'w':
-                total_cost = total_cost + 100
+                total_cost += 100
+                print "water"
+
             board[cell.x][cell.y] = '*'
+
             print 'path: cell: %d,%d' % (cell.x, cell.y)
-        print total_cost
+        print "the totalcost is: %d" % (total_cost)
 
     def compare(self, cell1, cell2):
         if cell1.f < cell2.f:
@@ -212,39 +268,6 @@ class AStar(object):
                         # add adj cell to open list
                         heapq.heappush(self.opened, (adj_cell.f, adj_cell))
 
-
-#========================Support Functions===============================================
-
-def makeEmptyGrid(grid_width,grid_height):
-    for x in range(grid_width):
-        board.append([0] * grid_height)
-
-def createBoard(board, board_height):
-    boardGrid = []
-    boardWidth = len(board)/board_height
-
-    for i in xrange(0,board_height):
-        boardRow = board[i*40:40*(i+1)]
-        boardGrid.append(boardRow)
-    return boardGrid
-
-def printBoard(board):
-    for i in xrange(len(board)):
-        print board[i]
-
-
-def getCell(x, y, board, board_height):
-    return board[x * board_height + y]
-
-def gridify(file_string):
-    grid_data = []
-    with open(file_string) as f:
-        for line in f:
-            grid_data.append(line.strip())
-    f.closed
-    return grid_data
-
-
 #=====================================MAIN=============================================
 def main():
 
@@ -254,7 +277,6 @@ def main():
 
     for i in xrange(len(board)):
         print board[i]
-
 
 if __name__ == "__main__":
     main()
