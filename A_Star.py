@@ -1,5 +1,5 @@
 import heapq
-
+import turtle
 
 board = []
 
@@ -196,15 +196,49 @@ def printBoard(board):
     for i in xrange(len(board)):
         print board[i]
 
+def turtlePrint(board, width, height):
+    turtle.hideturtle()
+    turtle.speed(0)
+    turtle.penup()
+    turtle.goto(-210, -60)
+    turtle.pendown()
+    turtle.goto(20*width-210, -60)
+    turtle.goto(20*width-210, 20*height-60)
+    turtle.goto(-210, 20*height-60)
+    turtle.goto(-210, -60)
+    turtle.penup()
+
+    for y in xrange(height):
+        for x in xrange(width):
+            turtle.penup()
+            turtle.goto(20*x-200,20*y-50)
+            turtle.pendown()
+            if board[x][y] is 1:
+                turtle.pencolor("green")
+                turtle.dot(10)
+                turtle.pencolor("black")
+            elif board[x][y] is 2:
+                turtle.dot(20)
+            elif board[x][y] is 3:
+                turtle.pencolor("red")
+                turtle.dot(10)
+                turtle.pencolor("black")
+            elif board[x][y] is 8:
+                turtle.pencolor("blue")
+                turtle.dot()
+                turtle.pencolor("black")
+            
+    turtle.exitonclick()
+
 #=====================================MAIN=============================================
 
 def main():
     a = AStar()
     a.init_grid()
     a.process()
-    #printing board
-    for i in xrange(len(board)):
-        print board[i]
+    #printBoard(board)
+    turtlePrint(board, a.grid_width, a.grid_height)
+
 
 
 if __name__ == "__main__":
