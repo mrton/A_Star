@@ -23,10 +23,9 @@ board4 = "board-2-4.txt"
 #for printing to terminal
 board = []
 
-
 #========================Support Functions===============================================
 
-def read_map(file_string):                           #This method reads a file that is in the same
+def read_map(file_string):                          #This method reads a file that is in the same
     mapstring = ""                                  #folder and return it as a string.
     with open(file_string) as f:
         for line in f:
@@ -38,13 +37,38 @@ def makeEmptyGrid(grid_width,grid_height):
     for x in range(grid_width):
         board.append([0] * grid_height)
 
-def retreive_closed_list(closed_set):
-    coordinates = set()
+def retreive_closed_list(closed_set):               #Putting the closed list in a set
+    coordinates = set()                             #for easier retrieval
     while len(closed_set):
         cell = closed_set.pop()
         coordinates.add((cell.x, cell.y))
     return coordinates
-def retreive_open_list(open_list)
+
+def retreive_open_list(open_list):                  #Putting the open list in a set
+    coordinates = set()                             #for easier retrieval
+    while len(open_list):
+        f, cell = open_list.pop()
+        coordinates.add((cell.x, cell.y))
+    return coordinates
+
+def output(board, open_set, closed_set):            #This method outputs to terminal
+
+    for x in xrange(len(board)):
+            for y in xrange(10):
+                if board[x][y]=='*' or board[x][y]=='A' or board[x][y] =='B':
+                    continue
+                if (x, y) in open_set:
+                    board[x][y] = '+'
+                if (x, y) in closed_set:
+                    board[x][y] = '-'
+
+    for i in xrange(len(board)):
+        print board[i]
+
+    print "There are %d nodes in the open list" % (len(open_set))
+    print "There are %d nodes in the closed list" % (len(closed_set))
+
+
 
 #=====================MAPS_AS_String====================================================
 
@@ -223,8 +247,12 @@ class AStar(object):
         adj.g = cell.g + cost_g
         adj.h = self.get_heuristic(adj)
         adj.parent = cell
+        #A*
         adj.f = adj.g + adj.h
-    '''
+        #Dijkstra
+        #adj.f = adj.g
+
+    # A* and Dijkstra(remember to uncomment the line right above too)
     def process(self):
         # add starting cell to open heap queue
         heapq.heappush(self.opened, (self.start.f, self.start))
@@ -252,11 +280,12 @@ class AStar(object):
                         # add adj cell to open list
                         heapq.heappush(self.opened, (adj_cell.f, adj_cell))
 
-        print "-----------------------------OPENLIST-----------------------------------------------------"
-        for x in xrange(len(self.opened)):
-            print "cordinates: %d,%d" % (self.opened[x][1].x , self.opened[x][1].y)
-        print "------------------------------------------------------------------------------------------"
+        #printing out to screen
+        open_set = retreive_open_list(self.opened)
+        closed_set = retreive_closed_list(self.closed)
+        output(board, open_set, closed_set)
     '''
+
     #BFS
     def process(self):
 
@@ -288,16 +317,12 @@ class AStar(object):
                         # add adj cell to open list
                         #heapq.heappush(self.opened, (adj_cell.f, adj_cell))
                         self.open_list.append((adj_cell.f, adj_cell))
+        #printing out to screen
+        open_set = retreive_open_list(self.open_list)
+        closed_set = retreive_closed_list(self.closed)
+        output(board, open_set, closed_set)
+'''
 
-        print "----------------------------OPENLIST----------------------------------------"
-        for x in xrange(len(self.open_list)):
-            print "cordinates: %d,%d" % (self.open_list[x][1].x , self.open_list[x][1].y)
-        print "----------------------------------------------------------------------------"
-
-        print "------------------------------CLOSEDLIST------------------------------------"
-        print retreive_closed_list(self.closed)
-
-        print "----------------------------------------------------------------------------"
 
 
 #=====================================MAIN=============================================
@@ -307,10 +332,7 @@ def main():
     a.init_grid()
     a.process()
 
-    for i in xrange(len(board)):
-        print board[i]
-
 
 if __name__ == "__main__":
     main()
-print "--- %s seconds ---" % (time.time() - start_time)
+print "The runtime is: " + "--- %s seconds ---" % (time.time() - start_time)

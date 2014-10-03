@@ -81,7 +81,7 @@ def turtlePrint(board, width, height):
             elif board[x][y] is "*":
                 turtle.pencolor("black")
                 turtle.dot(15)
-            
+
     turtle.exitonclick()
 
 #=====================MAPS_AS_String====================================================
