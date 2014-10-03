@@ -63,7 +63,7 @@ class AStar(object):
 
         for x in range(self.grid_width):
             for y in range(self.grid_height):
-                if (x, y) in walls4:
+                if (x, y) in walls2:
                     board[x][y] = 2
                     reachable = False
                 else:
@@ -76,20 +76,20 @@ class AStar(object):
         #board[11][3] = 1
         #board[17][3] = 3
         #------------Board2-------------
-        #self.start = self.get_cell(0, 3)
-        #self.end = self.get_cell(19, 3)
-        #board[0][3] = 1
-        #board[19][3] = 3
+        self.start = self.get_cell(0, 3)
+        self.end = self.get_cell(19, 3)
+        board[0][3] = 1
+        board[19][3] = 3
         #------------Board3-------------
         #self.start = self.get_cell(8, 3)
         #self.end = self.get_cell(19, 0)
         #board[8][3] = 1
         #board[19][0] = 3
         #------------Board4-------------
-        self.start = self.get_cell(0, 6)
-        self.end = self.get_cell(4, 2)
-        board[0][6] = 1
-        board[4][2] = 3
+        #self.start = self.get_cell(0, 6)
+        #self.end = self.get_cell(4, 2)
+        #board[0][6] = 1
+        #board[4][2] = 3
 
 
     def get_heuristic(self, cell):
@@ -236,7 +236,7 @@ def main():
     a = AStar()
     a.init_grid()
     a.process()
-    #printBoard(board)
+    printBoard(board)
     turtlePrint(board, a.grid_width, a.grid_height)
 
 
