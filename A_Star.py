@@ -227,7 +227,7 @@ def turtlePrint(board, width, height):
                 turtle.pencolor("blue")
                 turtle.dot()
                 turtle.pencolor("black")
-            
+
     turtle.exitonclick()
 
 #=====================================MAIN=============================================
