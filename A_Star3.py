@@ -178,44 +178,44 @@ class AStar(object):
         #These loops takes the mapstring and turns it into a coordinate system of list
         for x in xrange(grid_width):
             for y in xrange(grid_height):                                                #Change map in the if statements: map1,map2,map3 or map4
-                if map1[grid_width*(grid_height-y-1) + x] == 'r':                        #<---------------------------
+                if map3[grid_width*(grid_height-y-1) + x] == 'r':                        #<---------------------------
                     grid[x][y] = 'r'
                     cell_type = 'r'
                     g_cost = 1
                     board[x][y] = 'r'
 
-                if map1[grid_width*(grid_height-y-1) + x] == 'g':
+                if map3[grid_width*(grid_height-y-1) + x] == 'g':
                     grid[x][y] = 'g'
                     cell_type = 'g'
                     g_cost = 5
                     board[x][y] = 'g'
 
-                if map1[grid_width*(grid_height-y-1) + x] == 'f':
+                if map3[grid_width*(grid_height-y-1) + x] == 'f':
                     grid[x][y] = 'f'
                     cell_type = 'f'
                     g_cost = 10
                     board[x][y] = 'f'
 
-                if map1[grid_width*(grid_height-y-1) + x] == 'm':
+                if map3[grid_width*(grid_height-y-1) + x] == 'm':
                     grid[x][y] = 'm'
                     cell_type = 'm'
                     g_cost = 50
                     board[x][y] = 'm'
 
-                if map1[grid_width*(grid_height-y-1) + x] == 'w':
+                if map3[grid_width*(grid_height-y-1) + x] == 'w':
                     grid[x][y] = 'w'
                     cell_type = 'w'
                     g_cost = 100
                     board[x][y] = 'w'
 
-                if map1[grid_width*(grid_height-y-1) + x] == 'A':
+                if map3[grid_width*(grid_height-y-1) + x] == 'A':
                     grid[x][y] = 'A'
                     cell_type = 'A'
                     g_cost = 0
                     board[x][y] = 'A'
                     print "coordinates of A is: %d,%d" % (x, y)
 
-                if map1[grid_width*(grid_height-y-1) + x] == 'B':
+                if map3[grid_width*(grid_height-y-1) + x] == 'B':
                     grid[x][y] = 'B'
                     cell_type = 'B'
                     g_cost = 0
@@ -227,8 +227,8 @@ class AStar(object):
 
                 self.cells.append(Cell(x, y, cell_type, g_cost))
 
-        self.start = self.get_cell(17, 9)                                   #The starting coordinates and ending coordinates can be plotted in here
-        self.end = self.get_cell(17, 0)                                     # <----------map1:start(17, 9), end(17,0)
+        self.start = self.get_cell(1, 2)                                   #The starting coordinates and ending coordinates can be plotted in here
+        self.end = self.get_cell(27, 9)                                     # <----------map1:start(17, 9), end(17,0)
                                                                             #            map2:start(2, 8), end(28, 0)
                                                                             #            map3:start(1, 2), end(27, 9)
                                                                             #            map3:start(14, 7), end(13, 3)
