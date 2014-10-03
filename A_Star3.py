@@ -1,6 +1,7 @@
 import heapq
 import Queue
 import time
+import turtle
 start_time = time.time()
 #                                                                                           --------------------------------------------
 #A : starting                                                                               -----HELLO HELLO WELCOME TO CYBERSPACE------
@@ -56,6 +57,49 @@ def retreive_open_list(open_list):                  #Putting the open list in a 
 
 def output(board, open_set, closed_set):            #This method outputs to terminal
 
+    #Turtledraw Map
+    turtle.hideturtle()
+    turtle.speed(0)
+    turtle.penup()
+    turtle.goto(-410, -60)
+    turtle.pendown()
+    turtle.goto(20*40-410, -60)
+    turtle.goto(20*40-410, 20*10-60)
+    turtle.goto(-410, 20*10-60)
+    turtle.goto(-410, -60)
+    turtle.penup()
+
+    for y in xrange(10):
+        for x in xrange(40):
+            turtle.penup()
+            turtle.goto(20*x-400,20*y-50)
+            turtle.pendown()
+            if board[x][y] is "f":
+                turtle.pencolor("#3e6e30")
+                turtle.dot(20)
+            elif board[x][y] is "g":
+                turtle.pencolor("#8fff6e")
+                turtle.dot(20)
+            elif board[x][y] is "m":
+                turtle.pencolor("#a7aea1")
+                turtle.dot(20)
+            elif board[x][y] is "r":
+                turtle.pencolor("#adae59")
+                turtle.dot(20)
+            elif board[x][y] is "w":
+                turtle.pencolor("blue")
+                turtle.dot(20)
+            elif board[x][y] is "A":
+                turtle.pencolor("#f100ff")
+                turtle.dot(20)
+            elif board[x][y] is "B":
+                turtle.pencolor("#ee1815")
+                turtle.dot(20)
+            elif board[x][y] is "*":
+                turtle.pencolor("black")
+                turtle.dot(20)
+
+
     for x in xrange(len(board)):
             for y in xrange(10):
                 if board[x][y]=='*' or board[x][y]=='A' or board[x][y] =='B':
@@ -70,6 +114,24 @@ def output(board, open_set, closed_set):            #This method outputs to term
 
     print "There are %d nodes in the open list" % (len(open_set))
     print "There are %d nodes in the closed list" % (len(closed_set))
+
+
+    #turtledraw nodes in the open and closed list. Open -> nodes which is waiting to be checked. Closed -> nodes which have been checked
+    turtle.penup()
+
+    for y in xrange(10):
+        for x in xrange(40):
+            turtle.penup()
+            turtle.goto(20*x-400,20*y-50)
+            turtle.pendown()
+            if board[x][y] is "-": #closed
+                turtle.pencolor("black")
+                turtle.dot(10)
+            elif board[x][y] is "+": #open
+                turtle.pencolor("red")
+                turtle.dot(10)
+
+    turtle.exitonclick()
 
 
 
@@ -336,7 +398,9 @@ def main():
     a.init_grid()
     a.process()
 
-
 if __name__ == "__main__":
     main()
 print "The runtime is: " + "--- %s seconds ---" % (time.time() - start_time)
+
+
+

@@ -62,6 +62,7 @@ class AStar(object):
 
         for x in range(self.grid_width):
             for y in range(self.grid_height):
+
                 if (x, y) in walls1:                                                                 #Change walls here for different maps
                     board[x][y] = 2                                                                  #<----walls1, walls2, walls3 or walls4
                     reachable = False
@@ -224,7 +225,7 @@ def main():
     a = AStar()
     a.init_grid()
     a.process()
-    #printBoard(board)
+    printBoard(board)
     turtlePrint(board, a.grid_width, a.grid_height)
 
 
