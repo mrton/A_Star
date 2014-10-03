@@ -5,10 +5,7 @@ board = []
 
 class Cell(object):
     def __init__(self, x, y, reachable):
-        """
-        This is the cell class, each cell has a coordinate x and y.
-        Reachable is True if the cell is not a wall and False if it is.
-        """
+        #If reachable is true, then the cell is not a wall
         self.reachable = reachable
         self.x = x
         self.y = y
@@ -33,6 +30,8 @@ class AStar(object):
 
     def init_grid(self):
         #This  Method will initialize the grid that A* algorithm will be applied on
+
+        #The walls for the different maps are in these sets.
 
         walls1 = ((9, 4), (10, 4), (11, 4), (12, 4), (13, 4),
                  (14, 4), (14, 3), (9, 2), (10, 2), (11, 2),
@@ -63,23 +62,24 @@ class AStar(object):
 
         for x in range(self.grid_width):
             for y in range(self.grid_height):
-                if (x, y) in walls2:
-                    board[x][y] = 2
+
+                if (x, y) in walls1:                                                                 #Change walls here for different maps
+                    board[x][y] = 2                                                                  #<----walls1, walls2, walls3 or walls4
                     reachable = False
                 else:
                     reachable = True
                 self.cells.append(Cell(x, y, reachable))
 
-        #------------Board1-------------
-        #self.start = self.get_cell(11, 3)
-        #self.end = self.get_cell(17, 3)
-        #board[11][3] = 1
-        #board[17][3] = 3
+        #------------Board1-------------                                                             #Change map start and end here, and comment out the other.
+        self.start = self.get_cell(11, 3)                                                           #<---- Board1, Board2, Board3 or Board4
+        self.end = self.get_cell(17, 3)
+        board[11][3] = 1
+        board[17][3] = 3
         #------------Board2-------------
-        self.start = self.get_cell(0, 3)
-        self.end = self.get_cell(19, 3)
-        board[0][3] = 1
-        board[19][3] = 3
+        #self.start = self.get_cell(0, 3)
+        #self.end = self.get_cell(19, 3)
+        #board[0][3] = 1
+        #board[19][3] = 3
         #------------Board3-------------
         #self.start = self.get_cell(8, 3)
         #self.end = self.get_cell(19, 0)
@@ -124,13 +124,7 @@ class AStar(object):
             print 'path: cell: %d,%d' % (cell.x, cell.y)
 
     def compare(self, cell1, cell2):
-        """
-        Compare 2 cells F values
 
-        @param cell1 1st cell
-        @param cell2 2nd cell
-        @returns -1, 0 or 1 if lower, equal or greater
-        """
         if cell1.f < cell2.f:
             return -1
         elif cell1.f > cell2.f:
@@ -138,12 +132,7 @@ class AStar(object):
         return 0
 
     def update_cell(self, adj, cell):
-        """
-        Update adjacent cell
 
-        @param adj adjacent cell to current cell
-        @param cell current cell being processed
-        """
         adj.g = cell.g + 10
         adj.h = self.get_heuristic(adj)
         adj.parent = cell

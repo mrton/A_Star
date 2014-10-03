@@ -11,6 +11,9 @@ start_time = time.time()
 #f : forests         10
 #m : mountains       50
 #w : water          100
+#+ : cells in the open list
+#- : cells in the closed list
+#* : path
 
 #=======================boards==========================================================
 #the text files must be in the same folder.
@@ -238,6 +241,7 @@ class AStar(object):
         #Compute the heuristic value H for a cell: distance between
         #this cell and the ending cell multiply by 10.
         #Different heuristics can be used here.
+        #The one below is Manhattan distance.
         return 10 * (abs(cell.x - self.end.x) + abs(cell.y - self.end.y))
 
     def get_cell(self, x, y):
@@ -260,7 +264,7 @@ class AStar(object):
         return cells
 
 
-    def display_path(self):
+    def display_path(self):                                             #This method is used to display path if it is found
         total_cost = 0
         cell = self.end
         while cell.parent is not self.start:
@@ -310,10 +314,10 @@ class AStar(object):
         adj.h = self.get_heuristic(adj)
         adj.parent = cell
         #A*
-        adj.f = adj.g + adj.h
-        #Dijkstra
+        adj.f = adj.g + adj.h                                                 #FOR DIJKSTRA remove the heurictis
+        #DIJKSTRA                                                             #<-------------------------------
         #adj.f = adj.g
-
+    '''
     # A* and Dijkstra(remember to uncomment the line right above too)
     def process(self):
         # add starting cell to open heap queue
@@ -383,7 +387,7 @@ class AStar(object):
         open_set = retreive_open_list(self.open_list)
         closed_set = retreive_closed_list(self.closed)
         output(board, open_set, closed_set)
-'''
+
 
 
 
