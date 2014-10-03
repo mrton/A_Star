@@ -1,4 +1,5 @@
 import heapq
+import turtle
 #                                                                                           --------------------------------------------
 #A : starting                                                                               -----HELLO HELLO WELCOME TO CYBERSPACE------
 #B : ending                                                                                 --------------------------------------------
@@ -24,16 +25,64 @@ board = []
 #========================Support Functions===============================================
 
 def read_map(file_string):                           #This method reads a file that is in the same
-    mapstring = ""                                  #folder and return it as a string.
+    mapstring = ""                                   #folder and return it as a string.
     with open(file_string) as f:
         for line in f:
             mapstring = mapstring + line.strip()
         f.closed
     return mapstring
+
 def makeEmptyGrid(grid_width,grid_height):
     for x in range(grid_width):
         board.append([0] * grid_height)
 
+def printBoard(board):
+    for i in xrange(len(board)):
+        print board[i]
+
+def turtlePrint(board, width, height):
+    turtle.hideturtle()
+    turtle.speed(0)
+    turtle.penup()
+    turtle.goto(-410, -60)
+    turtle.pendown()
+    turtle.goto(20*width-410, -60)
+    turtle.goto(20*width-410, 20*height-60)
+    turtle.goto(-410, 20*height-60)
+    turtle.goto(-410, -60)
+    turtle.penup()
+
+    for y in xrange(height):
+        for x in xrange(width):
+            turtle.penup()
+            turtle.goto(20*x-400,20*y-50)
+            turtle.pendown()
+            if board[x][y] is "f":
+                turtle.pencolor("#3e6e30")
+                turtle.dot(15)
+            elif board[x][y] is "g":
+                turtle.pencolor("#8fff6e")
+                turtle.dot(15)
+            elif board[x][y] is "m":
+                turtle.pencolor("#a7aea1")
+                turtle.dot(15)
+            elif board[x][y] is "r":
+                turtle.pencolor("#adae59")
+                turtle.dot(15)
+            elif board[x][y] is "w":
+                turtle.pencolor("blue")
+                turtle.dot(15)
+            elif board[x][y] is "A":
+                turtle.pencolor("#f100ff")
+                turtle.dot(15)
+            elif board[x][y] is "B":
+                turtle.pencolor("#ee1815")
+                turtle.dot(15)
+            elif board[x][y] is "*":
+                turtle.pencolor("black")
+                turtle.dot(15)
+            
+    turtle.exitonclick()
 
 #=====================MAPS_AS_String====================================================
 
@@ -246,9 +295,9 @@ def main():
     a = AStar()
     a.init_grid()
     a.process()
+    #printBoard(board)
 
-    for i in xrange(len(board)):
-        print board[i]
+    turtlePrint(board, a.grid_width, a.grid_height)
 
 if __name__ == "__main__":
     main()
