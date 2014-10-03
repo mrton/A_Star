@@ -1,5 +1,7 @@
 import heapq
 import Queue
+import time
+start_time = time.time()
 #                                                                                           --------------------------------------------
 #A : starting                                                                               -----HELLO HELLO WELCOME TO CYBERSPACE------
 #B : ending                                                                                 --------------------------------------------
@@ -21,10 +23,9 @@ board4 = "board-2-4.txt"
 #for printing to terminal
 board = []
 
-
 #========================Support Functions===============================================
 
-def read_map(file_string):                           #This method reads a file that is in the same
+def read_map(file_string):                          #This method reads a file that is in the same
     mapstring = ""                                  #folder and return it as a string.
     with open(file_string) as f:
         for line in f:
@@ -35,6 +36,38 @@ def read_map(file_string):                           #This method reads a file t
 def makeEmptyGrid(grid_width,grid_height):
     for x in range(grid_width):
         board.append([0] * grid_height)
+
+def retreive_closed_list(closed_set):               #Putting the closed list in a set
+    coordinates = set()                             #for easier retrieval
+    while len(closed_set):
+        cell = closed_set.pop()
+        coordinates.add((cell.x, cell.y))
+    return coordinates
+
+def retreive_open_list(open_list):                  #Putting the open list in a set
+    coordinates = set()                             #for easier retrieval
+    while len(open_list):
+        f, cell = open_list.pop()
+        coordinates.add((cell.x, cell.y))
+    return coordinates
+
+def output(board, open_set, closed_set):            #This method outputs to terminal
+
+    for x in xrange(len(board)):
+            for y in xrange(10):
+                if board[x][y]=='*' or board[x][y]=='A' or board[x][y] =='B':
+                    continue
+                if (x, y) in open_set:
+                    board[x][y] = '+'
+                if (x, y) in closed_set:
+                    board[x][y] = '-'
+
+    for i in xrange(len(board)):
+        print board[i]
+
+    print "There are %d nodes in the open list" % (len(open_set))
+    print "There are %d nodes in the closed list" % (len(closed_set))
+
 
 
 #=====================MAPS_AS_String====================================================
@@ -61,8 +94,8 @@ class AStar(object):
 
     def __init__(self):
         self.opened = []
-        #heapq.heapify(self.opened)
-        self.q = Queue.Queue(self.opened)
+        heapq.heapify(self.opened)
+        self.open_list = []
         self.closed = set()
         self.cells = []
         self.grid_height = 10
@@ -82,8 +115,8 @@ class AStar(object):
 
         #These loops takes the mapstring and turns it into a coordinate system of list
         for x in xrange(grid_width):
-            for y in xrange(grid_height):
-                if map1[grid_width*(grid_height-y-1) + x] == 'r':                        #Change map in the if statement: map1,map2,map3 or map4
+            for y in xrange(grid_height):                                                #Change map in the if statements: map1,map2,map3 or map4
+                if map1[grid_width*(grid_height-y-1) + x] == 'r':                        #<---------------------------
                     grid[x][y] = 'r'
                     cell_type = 'r'
                     g_cost = 1
@@ -214,20 +247,18 @@ class AStar(object):
         adj.g = cell.g + cost_g
         adj.h = self.get_heuristic(adj)
         adj.parent = cell
-        adj.f = adj.h + adj.g
+        #A*
+        adj.f = adj.g + adj.h
+        #Dijkstra
+        #adj.f = adj.g
 
+    # A* and Dijkstra(remember to uncomment the line right above too)
     def process(self):
         # add starting cell to open heap queue
-        #A*
-        #heapq.heappush(self.opened, (self.start.f, self.start))
-        #BFS
-        self.q.put(self.opened, (self.start.f, self.start))
-
+        heapq.heappush(self.opened, (self.start.f, self.start))
         while len(self.opened):
             # pop cell from heap queue
-            #f, cell = heapq.heappop(self.opened)
-            f, cell = self.q.get(self.opened)
-            print self.q
+            f, cell = heapq.heappop(self.opened)
             # add cell to closed list so we don't process it twice
             self.closed.add(cell)
             # if ending cell, display found path
@@ -247,8 +278,52 @@ class AStar(object):
                     else:
                         self.update_cell(adj_cell, cell)
                         # add adj cell to open list
+                        heapq.heappush(self.opened, (adj_cell.f, adj_cell))
+
+        #printing out to screen
+        open_set = retreive_open_list(self.opened)
+        closed_set = retreive_closed_list(self.closed)
+        output(board, open_set, closed_set)
+    '''
+
+    #BFS
+    def process(self):
+
+        #enqueue the first cell to the open list
+        self.open_list.append((self.start.f, self.start))
+
+        while len(self.open_list):
+            # BFS: dequeue cell from list/queue
+            f, cell = self.open_list.pop(0)
+
+            # add cell to closed list so we don't process it twice
+            self.closed.add(cell)
+            # if ending cell, display found path
+            if cell is self.end:
+                self.display_path()
+                break
+            # get adjacent cells for cell
+            adj_cells = self.get_adjacent_cells(cell)
+            for adj_cell in adj_cells:
+                if adj_cell not in self.closed:
+                    if (adj_cell.f, adj_cell) in self.open_list:
+                        # if adj cell in open list, check if current path is
+                        # better than the one previously found
+                        # for this adj cell.
+                        if adj_cell.g > cell.g + 10:
+                            self.update_cell(adj_cell, cell)
+                    else:
+                        self.update_cell(adj_cell, cell)
+                        # add adj cell to open list
                         #heapq.heappush(self.opened, (adj_cell.f, adj_cell))
-                        self.q.put(self.opened, (adj_cell.f, adj_cell))
+                        self.open_list.append((adj_cell.f, adj_cell))
+        #printing out to screen
+        open_set = retreive_open_list(self.open_list)
+        closed_set = retreive_closed_list(self.closed)
+        output(board, open_set, closed_set)
+'''
+
+
 
 #=====================================MAIN=============================================
 def main():
@@ -257,9 +332,7 @@ def main():
     a.init_grid()
     a.process()
 
-    for i in xrange(len(board)):
-        print board[i]
-
 
 if __name__ == "__main__":
     main()
+print "The runtime is: " + "--- %s seconds ---" % (time.time() - start_time)

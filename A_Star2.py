@@ -81,7 +81,7 @@ def turtlePrint(board, width, height):
             elif board[x][y] is "*":
                 turtle.pencolor("black")
                 turtle.dot(15)
-            
+
     turtle.exitonclick()
 
 #=====================MAPS_AS_String====================================================
@@ -127,9 +127,9 @@ class AStar(object):
         grid = [[None] * w for i in xrange(h)]
 
         #These loops takes the mapstring and turns it into a coordinate system of list
-        for x in xrange(grid_width):
-            for y in xrange(grid_height):
-                if map3[grid_width*(grid_height-y-1) + x] == 'r':                        #Change map in the if statement: map1,map2,map3 or map4
+        for x in xrange(grid_width):                                                     #--------------------CHANGE MAP HERE-------------------
+            for y in xrange(grid_height):                                                #------------------------------------------------------
+                if map3[grid_width*(grid_height-y-1) + x] == 'r':                        #Change map in the if statements: map1,map2,map3 or map4
                     grid[x][y] = 'r'
                     cell_type = 'r'
                     g_cost = 1
